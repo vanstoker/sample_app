@@ -8,7 +8,7 @@ module SessionsHelper
 	# Remembers a user in a persistent session.
 	def remember(user)
 		user.remember
-		cookies.permanent.signed[:user_id] = user_id
+		cookies.permanent.signed[:user_id] = user.id
 		cookies.permanent[:remember_token] = user.remember_token
 	end
 
@@ -18,7 +18,7 @@ module SessionsHelper
 			@current_user ||= User.find_by(id: user_id)
 		elsif (user_id = cookies.signed[:user_id])
 			user = User.find_by(id: user_id)
-			if user && user.authenticated?(cookies[remember_token])
+			gitif user && user.authenticated?(cookies[:remember_token])
 				log_in user
 				@current_user = user
 			end
@@ -35,7 +35,6 @@ module SessionsHelper
 		cookies.delete(:user_id)
 		cookies.delete(:remember_token)
 	end
-
 	# Logs out the current user.
 	def log_out
 		forget(current_user)
